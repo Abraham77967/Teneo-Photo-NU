@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Session | Teneo Photo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="booking-page wizard-mode">
+
+    <div class="wizard-top-section">
+        <a href="index.html" class="back-home-btn">Back to Home</a>
+        <!-- Step 1 Calendar -->
+        <div id="step1-header" class="calendar-section calendar-card">
+            <h2 class="calendar-card-title">Pick a date!</h2>
+            <div class="calendar-header">
+                <button type="button" id="prev-month">&lt;</button>
+                <span id="month-year-display">Month Year</span>
+                <button type="button" id="next-month">&gt;</button>
+            </div>
+            <div class="calendar-days-header">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="calendar-grid" class="calendar-grid"></div>
+            <button type="button" id="change-date-btn" class="change-date-btn" style="display: none;">Change Date</button>
+        </div>
+        
+        <!-- Steps 2-5 Header -->
+        <div id="other-steps-header" class="wizard-header-nav" style="display: none;">
+            <button type="button" id="wizard-back-btn" class="back-btn">&lt;</button>
+            <h2 id="wizard-step-title" class="wizard-header-title">Event Details</h2>
+        </div>
+    </div>
+
+    <div class="wizard-bottom-sheet">
+        <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="booking-form" style="display: flex; flex-direction: column; flex: 1;">
+            
+            <!-- Step 1: Date & Time -->
+            <div class="wizard-step active" id="step-1">
+
+                <input type="hidden" id="datetime-val" name="datetime" required>
+                
+                <div class="time-section">
+                    <div class="custom-time-container">
+                        <div class="time-display-wrapper">
+                            <div class="time-display-col">
+                                <span>Start Time</span>
+                                <input type="text" id="time-start-input" class="time-readout" readonly value="8:00 AM">
+                            </div>
+                            <div class="time-display-divider">-</div>
+                            <div class="time-display-col">
+                                <span>End Time</span>
+                                <input type="text" id="time-end-input" class="time-readout" readonly value="10:00 AM">
+                            </div>
+                        </div>
+                        <div class="dual-slider-wrapper">
+                            <div class="dual-slider-track-container" id="dual-slider-track">
+                                <div class="dual-slider-bg"></div>
+                                <div class="dual-slider-fill" id="dual-slider-fill"></div>
+                                <div class="dual-slider-thumb start-thumb" id="thumb-start"></div>
+                                <div class="dual-slider-thumb end-thumb" id="thumb-end"></div>
+                            </div>
+                            <div class="dual-slider-ticks">
+                                <span>8 AM</span>
+                                <span>12 PM</span>
+                                <span>4 PM</span>
+                                <span>8 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="button" class="btn-wizard-next" onclick="goToStep(2, 'Your Details')">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Personal Details -->
+            <div class="wizard-step" id="step-2">
+                
+                
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" placeholder="Jane Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
+                </div>
+
+                <div class="form-group" style="margin-top: 2rem;">
+                    <button type="button" id="add-person-btn" class="btn-secondary">Add a Friend (+ $15)</button>
+                </div>
+
+                <div id="friends-list"></div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="button" class="btn-wizard-next" onclick="goToStep(3, 'Style Preference')">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Style -->
+            <div class="wizard-step" id="step-3">
+                
+                
+                <div class="form-group">
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="style" value="Classical">
+                            <span class="radio-text"><strong>Classical / Formal</strong><br><small>Creamy blurred backgrounds, elegant, timeless.</small></span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="style" value="Creative">
+                            <span class="radio-text"><strong>Creative / Vibrant</strong><br><small>Ultra-wide angles, highly expressive, fun.</small></span>
+                        </label>
+                        <label class="radio-option" style="grid-column: 1 / -1;">
+                            <input type="radio" name="style" value="IDK">
+                            <span class="radio-text"><strong>I don't know</strong><br><small>We can figure it out together!</small></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group custom-style-container" style="margin-top: 2rem;">
+                    <label>Or describe a custom style</label>
+                    <textarea name="custom-style" placeholder="Have a specific vibe in mind? Describe it here..."></textarea>
+                    <div class="upload-btn" onclick="document.getElementById('photo-reference-input').click()">
+                        <span>📷 Add Photo Reference (Optional)</span>
+                    </div>
+                    <input type="file" id="photo-reference-input" name="photo-references[]" multiple accept="image/*" style="display: none;">
+                    <div id="photo-preview-container" class="photo-preview-grid"></div>
+                </div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="button" class="btn-wizard-next" onclick="goToStep(4, 'Locations')">Continue</button>
+                    <button type="button" class="btn-wizard-skip" onclick="goToStep(4, 'Locations')">Skip this step</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Locations -->
+            <div class="wizard-step" id="step-4">
+                
+                
+                <div class="custom-dropdown-list" id="location-dropdown-list" style="position: relative; box-shadow: none; border: none; margin-top: 0; padding: 0;">
+                    <label class="dropdown-item">
+                        <div class="img-wrapper"><img src="locations photos/Alma mater.jpg" alt="Alma Mater"></div>
+                        <span>Alma Mater Statue</span>
+                        <input type="checkbox" name="locations[]" value="Alma Mater" class="dropdown-checkbox">
+                    </label>
+                    <label class="dropdown-item">
+                        <div class="img-wrapper"><img src="locations photos/main quad.jpg" alt="Main Quad"></div>
+                        <span>Main Quad</span>
+                        <input type="checkbox" name="locations[]" value="Main Quad" class="dropdown-checkbox">
+                    </label>
+                    <label class="dropdown-item">
+                        <div class="img-wrapper"><img src="locations photos/Foellinger.jpg" alt="Foellinger"></div>
+                        <span>Foellinger</span>
+                        <input type="checkbox" name="locations[]" value="Foellinger" class="dropdown-checkbox">
+                    </label>
+                    <label class="dropdown-item">
+                        <div class="img-wrapper"><img src="locations photos/Japan house.jpg" alt="Japan House"></div>
+                        <span>Japan House</span>
+                        <input type="checkbox" name="locations[]" value="Japan House" class="dropdown-checkbox">
+                    </label>
+                    <label class="dropdown-item">
+                        <div class="img-wrapper"><img src="locations photos/Hallene.jpg" alt="Hallene Gateway"></div>
+                        <span>Hallene Gateway</span>
+                        <input type="checkbox" name="locations[]" value="Hallene Gateway" class="dropdown-checkbox">
+                    </label>
+                    <div class="dropdown-item college-item">
+                        <label class="college-label">
+                            <div class="img-wrapper"><img src="assets/grad_cap.png" alt="College Building"></div>
+                            <span>My College Building</span>
+                            <input type="checkbox" name="locations[]" value="College Building" class="dropdown-checkbox college-checkbox">
+                        </label>
+                        <input type="text" class="college-input" placeholder="Type building name...">
+                    </div>
+                    <div class="custom-location-adder">
+                        <input type="text" id="custom-location-input-field" placeholder="I have another place I like!">
+                        <button type="button" id="add-custom-location-btn">Add</button>
+                    </div>
+                </div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="button" class="btn-wizard-next" onclick="goToStep(5, 'Final Details')">Continue</button>
+                    <button type="button" class="btn-wizard-skip" onclick="goToStep(5, 'Final Details')">Skip this step</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Final Details -->
+            <div class="wizard-step" id="step-5">
+                
+                
+                <div class="form-group custom-style-container">
+                    <label>Extra Notes or Questions?</label>
+                    <textarea name="notes" placeholder="Write any notes or questions here..."></textarea>
+                </div>
+
+                <div class="deposit-notice">
+                    <p><strong>Note:</strong> A $5 deposit is required via Venmo/Zelle after submitting this form to lock in your date.</p>
+                </div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="submit" class="btn-wizard-next">Save Date</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
