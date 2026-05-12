@@ -472,7 +472,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
         }
+        // Update Desktop Continue Buttons
+        const desktopOtherContinue = document.getElementById('desktop-other-continue');
+        if (desktopOtherContinue) {
+            const isLastStep = stepNum === 5;
+            const isZh = document.documentElement.lang === 'zh-CN';
+            desktopOtherContinue.textContent = isLastStep ? (isZh ? "保存日期" : "Save Date") : (isZh ? "继续 >" : "Continue >");
+        }
     };
+
+    // Desktop Header Continue Buttons Logic
+    const desktopStep1Continue = document.getElementById('desktop-step1-continue');
+    const desktopOtherContinue = document.getElementById('desktop-other-continue');
+    const bookingForm = document.getElementById('booking-form');
+
+    if (desktopStep1Continue) {
+        desktopStep1Continue.addEventListener('click', () => {
+            const isZh = document.documentElement.lang === 'zh-CN';
+            goToStep(2, isZh ? "你的信息" : "Your Details");
+        });
+    }
+
+    if (desktopOtherContinue) {
+        desktopOtherContinue.addEventListener('click', () => {
+            let currentActive = document.querySelector('.wizard-step.active');
+            let currentStepNum = currentActive ? parseInt(currentActive.id.split('-')[1]) : 1;
+            const isZh = document.documentElement.lang === 'zh-CN';
+
+            if (currentStepNum === 5) {
+                if (bookingForm) {
+                    // Use a standard submit button click to trigger validation
+                    const hiddenSubmit = document.createElement('button');
+                    hiddenSubmit.type = 'submit';
+                    hiddenSubmit.style.display = 'none';
+                    bookingForm.appendChild(hiddenSubmit);
+                    hiddenSubmit.click();
+                    hiddenSubmit.remove();
+                }
+            } else {
+                let nextStepNum = currentStepNum + 1;
+                let nextTitle = "";
+                switch(nextStepNum) {
+                    case 3: nextTitle = isZh ? "摄影风格偏好" : "Style Preference"; break;
+                    case 4: nextTitle = isZh ? "首选地点" : "Preferred Locations"; break;
+                    case 5: nextTitle = isZh ? "最后细节" : "Final Details"; break;
+                }
+                goToStep(nextStepNum, nextTitle);
+            }
+        });
+    }
 
     // Custom Calendar & Time UI Logic for Wizard Step 1
     const datetimeVal = document.getElementById('datetime-val');

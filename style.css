@@ -1495,168 +1495,9 @@ body.wizard-mode {
 }
 
 /* ==========================================================================
-   Desktop Refinement: Clean, Stable 2-Column Booking
+   Desktop Refinement: Professional Booking Dashboard
    ========================================================================== */
-@media (min-width: 1024px) {
-    body.wizard-mode {
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 5vh 2rem;
-        background-color: #fcfdfe;
-    }
 
-    body.wizard-mode::before {
-        content: '';
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-image: radial-gradient(circle at top left, #FFE3E3 0%, transparent 40%),
-                          radial-gradient(circle at bottom right, #E3FAFC 0%, transparent 40%);
-        z-index: -1;
-    }
-
-    /* Wrap both sections in a unified desktop container logic */
-    .wizard-top-section {
-        width: 100%;
-        max-width: 1100px;
-        padding: 0;
-        margin-bottom: 0;
-        height: auto;
-        display: block;
-    }
-
-    .back-home-btn {
-        margin-bottom: 3rem;
-    }
-
-    /* STEP 1: SIDE-BY-SIDE LAYOUT (Time Left, Calendar Right) */
-    body.wizard-mode:has(#step-1.active) {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Create a wrapper-like behavior for the two siblings */
-    body.wizard-mode:has(#step-1.active) .wizard-top-section,
-    body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
-        max-width: 1200px;
-        width: 100%;
-    }
-
-    /* We'll use a master grid on the Step 1 container */
-    @supports (display: grid) {
-        body.wizard-mode:has(#step-1.active) {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-areas: "calendar time";
-            gap: 2rem;
-            padding: 4rem;
-            align-content: center;
-            justify-items: center;
-        }
-
-        body.wizard-mode:has(#step-1.active) .wizard-top-section {
-            grid-area: calendar;
-            margin: 0;
-            background: white;
-            padding: 4rem;
-            border-radius: 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.06);
-        }
-
-        body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
-            grid-area: time;
-            position: static;
-            background: white;
-            padding: 4rem;
-            border-radius: 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.06);
-            height: 100% !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transform: none !important;
-            opacity: 1 !important;
-        }
-    }
-
-    body.wizard-mode:has(#step-1.active) .calendar-card {
-        padding: 0;
-        background: transparent;
-        box-shadow: none;
-        border: none;
-    }
-
-    body.wizard-mode:has(#step-1.active) #step-1 {
-        padding: 0;
-    }
-
-    /* Adjust the back home button to not break the grid on step 1 */
-    body.wizard-mode:has(#step-1.active) .back-home-btn {
-        position: absolute;
-        top: 2rem;
-        left: 2rem;
-    }
-
-    /* STEP 2+ LAYOUT: Centered Card */
-    body.wizard-mode:not(:has(#step-1.active)) .wizard-top-section {
-        max-width: 800px;
-    }
-
-    body.wizard-mode:not(:has(#step-1.active)) .wizard-bottom-sheet {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        background: white;
-        border-radius: 40px;
-        padding: 4rem;
-        box-shadow: 0 40px 100px rgba(0,0,0,0.1);
-        margin-top: 2rem;
-        height: auto !important;
-    }
-
-    /* Shared Desktop Elements */
-    .wizard-header-nav {
-        margin-bottom: 3rem;
-        padding: 0;
-        display: flex !important;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    .wizard-header-title {
-        font-size: 2.5rem;
-    }
-
-    .time-section {
-        background: #f8faff;
-        padding: 2.5rem;
-        border-radius: 30px;
-        border: 1px solid rgba(0,0,0,0.02);
-    }
-
-    .wizard-nav-buttons {
-        position: static;
-        padding: 3rem 0 0;
-        background: transparent;
-        margin-top: 2rem;
-    }
-
-    .btn-wizard-next {
-        width: auto;
-        min-width: 300px;
-        padding: 1.5rem;
-        font-size: 1.2rem;
-        border-radius: 20px;
-    }
-
-    /* Hide redundant elements */
-    .change-date-btn { display: none !important; }
-}
 
 /* Prevents flash-of-animation on initial page load */
 .wizard-bottom-sheet.no-transition {
@@ -1827,6 +1668,10 @@ body.wizard-mode {
 }
 
 /* Specific Step Styles */
+body.wizard-mode:not(:has(#step-1.active)) .back-home-btn {
+    display: none !important;
+}
+
 .step-title {
     font-family: var(--font-heading);
     font-size: 1.8rem;
@@ -2072,3 +1917,307 @@ body.wizard-mode {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
 }
+
+/* ==========================================================================
+   Desktop Refinement: Professional Booking Dashboard (Moved to end for priority)
+   ========================================================================== */
+@media screen and (min-width: 1024px) {
+    body.wizard-mode {
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 5vh 2rem;
+        background-color: #f8faff;
+    }
+
+    body.wizard-mode::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(circle at top left, #FFE3E3 0%, transparent 40%),
+                          radial-gradient(circle at bottom right, #E3FAFC 0%, transparent 40%);
+        z-index: -1;
+    }
+
+    /* THE DESKTOP 'BOOKING SUITE' WRAPPER */
+    body.wizard-mode {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow: auto !important;
+        overflow-x: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .wizard-top-section, .wizard-bottom-sheet {
+        position: static !important;
+        width: 100% !important;
+        max-width: 1100px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        transform: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+    }
+
+    #booking-form, .wizard-step {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    /* Step 1: Side-by-Side Dashboard */
+    body.wizard-mode:has(#step-1.active) {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4rem;
+        width: 100%;
+        max-width: none;
+        padding: 0 4rem;
+    }
+
+    body.wizard-mode:has(#step-1.active) .wizard-top-section {
+        flex: 0 0 auto;
+        width: 550px !important;
+        background: white !important;
+        padding: 4rem !important;
+        border-radius: 45px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+        display: block !important;
+    }
+
+    body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
+        flex: 0 0 auto;
+        width: 550px !important;
+        display: block !important;
+        background: white !important;
+        padding: 4rem !important;
+        border-radius: 45px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+    }
+
+    body.wizard-mode:has(#step-1.active) .calendar-card {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    body.wizard-mode:has(#step-1.active) #other-steps-header {
+        display: none !important;
+    }
+
+    /* STEPS 2-5: Unified Centered Card */
+    body.wizard-mode:not(:has(#step-1.active)) {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important; /* Allow top-down growth */
+        min-height: 100vh;
+        width: 100%;
+        background: transparent !important;
+        padding: 8rem 2rem; /* Generous padding for scrolling */
+        overflow-y: auto !important;
+    }
+
+    /* Create the unified card look using the bottom sheet on desktop */
+    body.wizard-mode:not(:has(#step-1.active)) .wizard-bottom-sheet {
+        display: block !important;
+        background: white !important;
+        padding: 4rem !important;
+        border-radius: 45px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+        max-width: 850px;
+        width: 100%;
+        margin: 0 auto;
+        position: relative !important;
+    }
+
+    body.wizard-mode:not(:has(#step-1.active)) .wizard-top-section {
+        max-width: 850px;
+        width: 100%;
+        margin: 0 auto 2rem auto;
+        display: block !important;
+    }
+
+    body.wizard-mode:not(:has(#step-1.active)) #step1-header {
+        display: none !important;
+    }
+
+    body.wizard-mode:not(:has(#step-1.active)) #other-steps-header {
+        display: flex !important;
+        padding: 0;
+        margin: 0;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Top-Right Navigation Bar for Desktop */
+    .desktop-nav-bar, .wizard-header-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100%;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    /* Hide step 1 nav bar when on other steps */
+    body.wizard-mode:not(:has(#step-1.active)) .desktop-nav-bar {
+        display: none !important;
+    }
+
+    .desktop-header-continue-btn {
+        display: block !important;
+        background: #ECA06B;
+        color: white;
+        border: none;
+        padding: 0.9rem 2.2rem;
+        border-radius: 50px;
+        font-weight: 800;
+        font-family: var(--font-heading);
+        cursor: pointer;
+        font-size: 1.05rem;
+        box-shadow: 0 10px 20px rgba(236, 160, 107, 0.2);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        white-space: nowrap;
+        z-index: 100;
+    }
+
+    .desktop-header-continue-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(236, 160, 107, 0.4);
+        background: #e08b4d;
+    }
+
+    /* Hide the old bottom navigation on desktop */
+    .wizard-nav-buttons {
+        display: none !important;
+    }
+
+    /* Step Visibility Logic (Strict Desktop) */
+    .wizard-step {
+        display: none !important;
+        position: relative !important;
+        opacity: 1 !important;
+        transform: none !important;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+    .wizard-step.active {
+        display: flex !important;
+    }
+
+    /* STEP 2: REMAKE (2-Column Dashboard) */
+    body.wizard-mode:has(#step-2.active) .wizard-bottom-sheet {
+        max-width: 1100px !important;
+    }
+
+    body.wizard-mode:has(#step-2.active) #step-2 {
+        display: grid !important;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 5rem;
+        align-items: start;
+        text-align: left;
+    }
+
+    .desktop-step2-left, .desktop-step2-right {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+    }
+
+    body.wizard-mode:has(#step-2.active) .form-group {
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+    }
+
+    body.wizard-mode:has(#step-2.active) .form-group input {
+        text-align: left;
+        max-width: none;
+    }
+
+    /* Right side: Friends Section */
+    #friends-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    #friends-list .form-group {
+        background: #f8faff;
+        padding: 2rem;
+        border-radius: 25px;
+        border: 1px solid rgba(0,0,0,0.02);
+        animation: slideInUp 0.4s ease-out forwards;
+    }
+
+    .btn-secondary {
+        width: 100%;
+        padding: 1.5rem;
+        background: #f0f4ff;
+        color: #4a6fff;
+        border: 2px dashed #d0d9ff;
+        border-radius: 20px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background: #e6ecff;
+        border-color: #4a6fff;
+        transform: translateY(-2px);
+    }
+
+    /* Input sizing for desktop general */
+    .form-group input, .form-group textarea {
+        width: 100%;
+        max-width: 650px;
+    }
+
+    /* Shared Desktop Styling */
+    .calendar-card-title {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .wizard-header-title {
+        font-size: 2.8rem;
+        font-weight: 900;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .time-section {
+        background: #f8faff;
+        padding: 3rem;
+        border: 1px solid rgba(0,0,0,0.02);
+        width: 100%;
+    }
+
+    /* Hide redundant elements */
+    .change-date-btn { display: none !important; }
+    .btn-wizard-next { display: none !important; }
+}
+
+.desktop-header-continue-btn { display: none; }

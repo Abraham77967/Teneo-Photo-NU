@@ -11,7 +11,10 @@
 <body class="booking-page wizard-mode">
 
     <div class="wizard-top-section">
-        <a href="index.html" class="back-home-btn">Back to Home</a>
+        <div class="desktop-nav-bar">
+            <a href="index.html" class="back-home-btn">Back to Home</a>
+            <button type="button" class="desktop-header-continue-btn" id="desktop-step1-continue">Continue &gt;</button>
+        </div>
         <!-- Step 1 Calendar -->
         <div id="step1-header" class="calendar-section calendar-card">
             <h2 class="calendar-card-title">Pick a date!</h2>
@@ -31,6 +34,7 @@
         <div id="other-steps-header" class="wizard-header-nav" style="display: none;">
             <button type="button" id="wizard-back-btn" class="back-btn">&lt;</button>
             <h2 id="wizard-step-title" class="wizard-header-title">Event Details</h2>
+            <button type="button" class="desktop-header-continue-btn" id="desktop-other-continue">Continue &gt;</button>
         </div>
     </div>
 
@@ -79,25 +83,23 @@
 
             <!-- Step 2: Personal Details -->
             <div class="wizard-step" id="step-2">
-                
-                
-                <div class="form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" name="name" placeholder="Jane Doe" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
-                </div>
-
-                <div class="form-group" style="margin-top: 2rem;">
-                    <button type="button" id="add-person-btn" class="btn-secondary">Add a Friend (+ $15)</button>
+                <div class="desktop-step2-left">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Jane Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
+                    </div>
                 </div>
 
-                <div id="friends-list"></div>
-
-                <div class="wizard-nav-buttons">
-                    <button type="button" class="btn-wizard-next" onclick="goToStep(3, 'Style Preference')">Continue</button>
+                <div class="desktop-step2-right">
+                    <div class="form-group">
+                        <label>Bring some friends?</label>
+                        <button type="button" id="add-person-btn" class="btn-secondary">+ Add a Friend (+$15)</button>
+                    </div>
+                    <div id="friends-list"></div>
                 </div>
             </div>
 
