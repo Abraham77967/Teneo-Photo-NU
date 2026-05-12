@@ -1494,6 +1494,128 @@ body.wizard-mode {
     pointer-events: none;
 }
 
+/* ==========================================================================
+   Desktop Refinement for Booking Page
+   ========================================================================== */
+@media (min-width: 1024px) {
+    body.wizard-mode {
+        overflow: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        gap: 4rem;
+        background-color: var(--bg-color);
+    }
+
+    body.wizard-mode::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(circle at top left, #FFE3E3 0%, transparent 40%),
+                          radial-gradient(circle at bottom right, #E3FAFC 0%, transparent 40%);
+        z-index: -1;
+    }
+
+    /* Wrap the two siblings in a virtual desktop layout */
+    .wizard-top-section {
+        flex: 0 0 450px;
+        padding: 0;
+        height: auto;
+        justify-content: flex-start;
+        position: sticky;
+        top: 4rem;
+    }
+
+    .wizard-top-section.sheet-open,
+    .wizard-top-section.sheet-open.is-sub-step {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+
+    .wizard-bottom-sheet {
+        position: relative;
+        flex: 0 0 600px;
+        max-height: 85vh;
+        height: auto !important;
+        border-radius: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        transform: none !important;
+        opacity: 1 !important;
+        padding: 3rem;
+        z-index: 2;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wizard-bottom-sheet form {
+        overflow-y: auto;
+        padding-right: 0.5rem;
+    }
+
+    .wizard-bottom-sheet form::-webkit-scrollbar {
+        width: 6px;
+    }
+    .wizard-bottom-sheet form::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+
+    .wizard-bottom-sheet.sheet-hidden {
+        /* On desktop, instead of hiding, we could fade or just let it be, 
+           but the mobile logic hides it. Let's make it visible but subtle if needed,
+           or just keep the logic but refine the visual. */
+        display: none; 
+    }
+
+    .wizard-bottom-sheet.is-sub-step {
+        height: auto !important;
+        min-height: 600px;
+    }
+
+    .calendar-card {
+        padding: 2.5rem;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .calendar-card-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .wizard-step {
+        padding-top: 0;
+        padding-bottom: 2rem;
+    }
+
+    .wizard-header-nav {
+        margin-bottom: 2.5rem;
+        background: transparent;
+        padding: 0;
+    }
+
+    .wizard-header-title {
+        font-size: 2.2rem;
+    }
+
+    .time-section {
+        margin-bottom: 3rem;
+    }
+
+    .wizard-nav-buttons {
+        position: static;
+        padding: 2rem 0 0;
+        background: transparent;
+    }
+
+    .back-home-btn {
+        margin-bottom: 2rem;
+    }
+}
+
 /* Prevents flash-of-animation on initial page load */
 .wizard-bottom-sheet.no-transition {
     transition: none !important;
