@@ -1495,7 +1495,7 @@ body.wizard-mode {
 }
 
 /* ==========================================================================
-   Desktop Refinement: Professional Booking Dashboard
+   Desktop Refinement: Clean, Stable 2-Column Booking
    ========================================================================== */
 @media (min-width: 1024px) {
     body.wizard-mode {
@@ -1505,8 +1505,8 @@ body.wizard-mode {
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        padding: 4rem 2rem;
-        background-color: #f8f9fc;
+        padding: 5vh 2rem;
+        background-color: #fcfdfe;
     }
 
     body.wizard-mode::before {
@@ -1518,147 +1518,108 @@ body.wizard-mode {
         z-index: -1;
     }
 
-    /* Unified Sidebar/Main layout but only when appropriate */
-    .booking-page.wizard-mode {
-        display: block; /* Back to block, we'll handle layout via flex/grid on children */
+    /* Wrap both sections in a unified desktop container logic */
+    .wizard-top-section {
         width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* STEP 1: SIDE-BY-SIDE CALENDAR & TIME */
-    body.wizard-mode .wizard-top-section {
-        display: block;
+        max-width: 1100px;
         padding: 0;
-        margin-bottom: 2rem;
-    }
-
-    /* When on Step 1, we want to show the calendar and time slider together */
-    body.wizard-mode:has(#step-1.active) .wizard-top-section,
-    body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
-        display: inline-block;
-        vertical-align: top;
-    }
-
-    /* Container for the unified Step 1 view */
-    @supports (display: grid) {
-        body.wizard-mode:has(#step-1.active) {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Logic to create a two-column grid only on Step 1 */
-        .wizard-top-section, .wizard-bottom-sheet {
-            width: 100%;
-            max-width: 1100px;
-        }
-        
-        body.wizard-mode:has(#step-1.active) .wizard-top-section {
-            /* This will be the wrapper for the calendar part */
-            margin-bottom: 0;
-        }
-
-        /* We'll use a specific container for the split Step 1 if we can, 
-           but since they are siblings, we'll use a wrapper style */
-    }
-
-    /* Let's simplify: A large unified card for the current step */
-    .calendar-card {
-        max-width: none;
-        width: 100%;
-        padding: 3rem;
-        border-radius: 40px 40px 0 0;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.05);
-        border: none;
-        background: white;
         margin-bottom: 0;
+        height: auto;
+        display: block;
     }
 
-    /* On Step 1, the calendar and form (time) are joined */
-    body.wizard-mode:has(#step-1.active) .calendar-card {
+    .back-home-btn {
+        margin-bottom: 3rem;
+    }
+
+    /* STEP 1: SIDE-BY-SIDE LAYOUT */
+    body.wizard-mode:has(#step-1.active) .wizard-top-section {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
         align-items: start;
+        background: white;
+        padding: 4rem;
         border-radius: 40px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.08);
     }
 
+    body.wizard-mode:has(#step-1.active) .calendar-card {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        margin: 0;
+    }
+
+    .calendar-card-title {
+        font-size: 2rem;
+        text-align: left;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Move the Time Selection Step 1 content into the grid column */
     body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
-        position: relative;
-        margin-top: -300px; /* Pull it up to overlap/integrate or we just move the time section */
-        z-index: 10;
+        position: static;
+        width: 100%;
+        max-width: none;
         background: transparent;
         box-shadow: none;
         padding: 0;
-        max-height: none;
-        pointer-events: none; /* Let clicks pass through to calendar if needed, but we'll enable them on children */
-    }
-
-    body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet .wizard-step {
-        pointer-events: auto;
-    }
-
-    /* Specifically move the Time Selector into the right column of the calendar card via clever CSS if possible,
-       or just make them look like one. */
-    
-    /* Better approach: Just style the siblings to look like a split card on Step 1 */
-    .wizard-bottom-sheet {
-        position: relative;
-        width: 100%;
-        max-width: 1100px;
-        background: white;
-        border-radius: 0 0 40px 40px;
-        padding: 4rem;
-        box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+        margin-top: 0;
+        height: auto !important;
         transform: none !important;
         opacity: 1 !important;
-        z-index: 2;
-        margin-top: 0;
-        max-height: none;
-        height: auto !important;
+        display: block;
     }
 
-    /* On Step 1, the bottom sheet provides the right half of the layout */
-    body.wizard-mode:has(#step-1.active) .wizard-bottom-sheet {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 50%;
-        height: 100% !important;
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
-        padding: 8rem 4rem 4rem 0; /* Padding to align with calendar */
-        margin-top: 0;
+    /* Align Time Selector with Calendar Grid */
+    body.wizard-mode:has(#step-1.active) #step-1 {
+        padding-top: 5rem; /* Aligns with calendar title area */
     }
 
-    /* When on Step 1, the calendar title needs to be left aligned */
-    body.wizard-mode:has(#step-1.active) .calendar-card-title {
-        text-align: left;
-    }
-
-    /* Step 2+ Layout: Traditional Centered Card */
+    /* STEP 2+ LAYOUT: Centered Card */
     body.wizard-mode:not(:has(#step-1.active)) .wizard-top-section {
         max-width: 800px;
     }
+
     body.wizard-mode:not(:has(#step-1.active)) .wizard-bottom-sheet {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        background: white;
         border-radius: 40px;
+        padding: 4rem;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.1);
         margin-top: 2rem;
+        height: auto !important;
     }
 
-    /* Refine the Time Selector for desktop */
+    /* Shared Desktop Elements */
+    .wizard-header-nav {
+        margin-bottom: 3rem;
+        padding: 0;
+        display: flex !important;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .wizard-header-title {
+        font-size: 2.5rem;
+    }
+
     .time-section {
-        background: #fcfdfe;
+        background: #f8faff;
         padding: 2.5rem;
-        border-radius: 25px;
-        border: 1px solid rgba(0,0,0,0.03);
+        border-radius: 30px;
+        border: 1px solid rgba(0,0,0,0.02);
     }
 
     .wizard-nav-buttons {
         position: static;
         padding: 3rem 0 0;
         background: transparent;
+        margin-top: 2rem;
     }
 
     .btn-wizard-next {
@@ -1666,6 +1627,7 @@ body.wizard-mode {
         min-width: 300px;
         padding: 1.5rem;
         font-size: 1.2rem;
+        border-radius: 20px;
     }
 
     /* Hide redundant elements */

@@ -300,6 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.collapseCalendarToSelectedRow = function(selectedCell) {
         showSheet();
+        if (window.innerWidth >= 1024) return; // Don't collapse calendar on desktop
 
         if (typeof calendarGrid !== 'undefined' && calendarGrid && selectedCell) {
             const cells = Array.from(calendarGrid.children);
