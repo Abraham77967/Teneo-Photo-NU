@@ -919,6 +919,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let photoLinks = [];
 
             const uploadPhotos = async () => {
+                const timeoutPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.warn('Photo upload timed out after 10s');
+                        resolve({ timeout: true });
+                    }, 10000);
+                });
+
                 try {
                     if (photoInput && photoInput.files.length > 0) {
                         if (submitBtn) submitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
@@ -933,8 +940,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             }).then(res => res.json()).catch(err => ({ success: false, error: err }));
                         });
 
-                        const results = await Promise.all(uploadPromises);
-                        photoLinks = results.filter(r => r.success).map(r => r.data.url);
+                        const mainPromise = Promise.all(uploadPromises).then(results => {
+                            photoLinks = results.filter(r => r && r.success).map(r => r.data.url);
+                            return { success: true };
+                        });
+
+                        // Race against the 10s timeout
+                        await Promise.race([mainPromise, timeoutPromise]);
                     }
                 } catch (err) {
                     console.error('Photo Upload Error:', err);
