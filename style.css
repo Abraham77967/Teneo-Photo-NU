@@ -1,10 +1,10 @@
 :root {
     --bg-color: #FAFAFA;
-    --text-main: #2D3142;
+    --text-main: #161E54;
     --text-muted: #646E82;
-    --accent: #FF6B6B;
-    --accent-gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
-    --secondary-gradient: linear-gradient(135deg, #4ECDC4, #556270);
+    --accent: #F16D34;
+    --accent-gradient: linear-gradient(135deg, #F16D34, #FF986A);
+    --secondary-gradient: linear-gradient(135deg, #161E54, #BBE0EF);
     --card-bg: #FFFFFF;
     
     --font-heading: 'Nunito', sans-serif;
@@ -32,8 +32,8 @@ body {
     font-family: var(--font-body);
     line-height: 1.6;
     overflow-x: hidden;
-    background-image: radial-gradient(circle at top left, #FFE3E3 0%, transparent 40%),
-                      radial-gradient(circle at bottom right, #E3FAFC 0%, transparent 40%);
+    background-image: radial-gradient(circle at top left, #BBE0EF 0%, transparent 40%),
+                      radial-gradient(circle at bottom right, #FF986A 0%, transparent 40%);
     background-attachment: fixed;
 }
 
@@ -64,12 +64,12 @@ h1, h2, h3, h4, .logo {
     transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.2s ease;
     border: none;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 8px 20px rgba(241, 109, 52, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 12px 25px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 12px 25px rgba(241, 109, 52, 0.4);
 }
 
 .btn-primary.small {
@@ -96,7 +96,7 @@ h1, h2, h3, h4, .logo {
 .fun-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    border-color: #FFE3E3;
+    border-color: #FF986A;
 }
 
 /* Navbar */
@@ -151,7 +151,7 @@ h1, h2, h3, h4, .logo {
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: #FFF0F0;
+    background: rgba(187, 224, 239, 0.3);
     color: var(--accent) !important;
     border-radius: 50%;
     font-weight: 800 !important;
@@ -261,7 +261,7 @@ h1, h2, h3, h4, .logo {
     font-size: 2rem;
     margin-bottom: 2rem;
     color: var(--accent);
-    background: #FFF0F0;
+    background: rgba(187, 224, 239, 0.3);
     display: inline-block;
     padding: 0.5rem 1.5rem;
     border-radius: 20px;
@@ -302,7 +302,7 @@ h1, h2, h3, h4, .logo {
 
 .gear-tag {
     font-size: 0.95rem;
-    color: #4ECDC4;
+    color: #161E54;
     background: rgba(78, 205, 196, 0.15);
     padding: 0.3rem 1rem;
     border-radius: 20px;
@@ -324,7 +324,7 @@ h1, h2, h3, h4, .logo {
 }
 
 .pricing-card.featured {
-    border-color: #4ECDC4;
+    border-color: #161E54;
     transform: scale(1.02);
 }
 
@@ -337,7 +337,7 @@ h1, h2, h3, h4, .logo {
     top: 0;
     right: 2rem;
     transform: translateY(-50%);
-    background: #4ECDC4;
+    background: #161E54;
     color: white;
     padding: 0.5rem 1.2rem;
     border-radius: 20px;
@@ -399,7 +399,7 @@ h1, h2, h3, h4, .logo {
     width: 28px;
     height: 28px;
     background: rgba(78, 205, 196, 0.15);
-    color: #4ECDC4;
+    color: #161E54;
     border-radius: 50%;
     margin-right: 1rem;
     font-size: 0.9rem;
@@ -495,7 +495,7 @@ h1, h2, h3, h4, .logo {
     .mobile-lang-btn {
         width: 55px;
         height: 55px;
-        background: #FFF0F0;
+        background: rgba(187, 224, 239, 0.3);
         color: var(--accent);
         border-radius: 50%;
         display: flex;
@@ -621,13 +621,13 @@ select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #4ECDC4;
+    border-color: #161E54;
     background: white;
     box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.1);
 }
 
 .btn-secondary {
-    background: #FFF0F0;
+    background: rgba(187, 224, 239, 0.3);
     color: var(--accent);
     padding: 0.8rem 1.5rem;
     border-radius: 50px;
@@ -640,7 +640,7 @@ input:focus, select:focus {
 }
 
 .btn-secondary:hover {
-    background: #FFE3E3;
+    background: #FF986A;
     border-color: var(--accent);
 }
 
@@ -692,7 +692,7 @@ input:focus, select:focus {
 }
 
 .radio-option:has(input:checked) {
-    border-color: #4ECDC4;
+    border-color: #161E54;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(78, 205, 196, 0.2);
 }
@@ -708,7 +708,7 @@ input:focus, select:focus {
 }
 
 .deposit-notice {
-    background: rgba(255, 107, 107, 0.1);
+    background: rgba(241, 109, 52, 0.1);
     color: #D63031;
     padding: 1rem 1.5rem;
     border-radius: 15px;
@@ -776,12 +776,12 @@ input:focus, select:focus {
 }
 
 .hidden-checkbox:checked ~ .check-circle {
-    background: #4ECDC4;
+    background: #161E54;
     color: white;
 }
 
 .location-card:has(.hidden-checkbox:checked) {
-    border-color: #4ECDC4;
+    border-color: #161E54;
     box-shadow: 0 10px 25px rgba(78, 205, 196, 0.2);
     transform: scale(1.02);
 }
@@ -801,10 +801,10 @@ input:focus, select:focus {
     color: var(--text-main);
 }
 .custom-select-btn:hover {
-    border-color: #4ECDC4;
+    border-color: #161E54;
 }
 .custom-select-btn.selected {
-    border-color: #4ECDC4;
+    border-color: #161E54;
     background: rgba(78, 205, 196, 0.05);
     font-weight: 700;
 }
@@ -1231,7 +1231,7 @@ input:focus, select:focus {
 }
 
 .dropdown-item:has(input[type="checkbox"]:checked) {
-    border-color: #4ECDC4;
+    border-color: #161E54;
     background: rgba(78, 205, 196, 0.1);
 }
 
@@ -1937,7 +1937,7 @@ body.wizard-mode:not(:has(#step-1.active)) .back-home-btn {
         content: '';
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background-image: radial-gradient(circle at top left, #FFE3E3 0%, transparent 40%),
+        background-image: radial-gradient(circle at top left, #FF986A 0%, transparent 40%),
                           radial-gradient(circle at bottom right, #E3FAFC 0%, transparent 40%);
         z-index: -1;
     }
