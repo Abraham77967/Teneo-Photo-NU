@@ -1,3 +1,34 @@
+// Debug Logger for Mobile
+const debug = {
+    log: function(msg) {
+        console.log(msg);
+        const consoleEl = document.getElementById('debug-console');
+        if (consoleEl) {
+            const entry = document.createElement('div');
+            entry.style.borderBottom = '1px solid #333';
+            entry.style.padding = '2px 0';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            consoleEl.appendChild(entry);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+    },
+    error: function(msg, err) {
+        console.error(msg, err);
+        this.log(`❌ ERROR: ${msg} ${err ? (err.message || err) : ''}`);
+    }
+};
+
+// Create debug UI if ?debug=true is in URL
+if (window.location.search.includes('debug=true')) {
+    document.addEventListener('DOMContentLoaded', () => {
+        const div = document.createElement('div');
+        div.id = 'debug-console';
+        div.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:120px;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:9px;overflow-y:auto;z-index:999999;padding:5px;pointer-events:none;border-top:2px solid #0f0;';
+        document.body.appendChild(div);
+        debug.log('Debug console active');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
@@ -1016,11 +1047,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let photoLinks = [];
 
             const uploadPhotos = async () => {
+                debug.log(`Starting photo upload. Files: ${photoInput?.files?.length || 0}`);
+                
                 const timeoutPromise = new Promise((resolve) => {
                     setTimeout(() => {
-                        console.warn('Photo upload timed out after 10s');
+                        debug.error('Photo upload timed out after 30s');
                         resolve({ timeout: true });
-                    }, 10000);
+                    }, 30000); // Increased to 30s for mobile
                 });
 
                 try {
@@ -1028,29 +1061,57 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (submitBtn) submitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
                         if (desktopSubmitBtn) desktopSubmitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
 
-                        const uploadPromises = Array.from(photoInput.files).map(file => {
+                        const uploadPromises = Array.from(photoInput.files).map((file, idx) => {
+                            debug.log(`Uploading file ${idx + 1}/${photoInput.files.length}: ${file.name} (${Math.round(file.size/1024)}KB)`);
                             const formDataImg = new FormData();
                             formDataImg.append('image', file);
+                            
                             return fetch(`https://api.imgbb.com/1/upload?key=99ac161af67397a6f5968dd88ad16543`, {
                                 method: 'POST',
                                 body: formDataImg
-                            }).then(res => res.json()).catch(err => ({ success: false, error: err }));
+                            })
+                            .then(res => {
+                                debug.log(`File ${idx + 1} response status: ${res.status}`);
+                                return res.json();
+                            })
+                            .then(json => {
+                                if (json.success) {
+                                    debug.log(`File ${idx + 1} uploaded successfully: ${json.data.url}`);
+                                } else {
+                                    debug.error(`File ${idx + 1} API error:`, json.error);
+                                }
+                                return json;
+                            })
+                            .catch(err => {
+                                debug.error(`File ${idx + 1} fetch error:`, err);
+                                return { success: false, error: err };
+                            });
                         });
 
                         const mainPromise = Promise.all(uploadPromises).then(results => {
-                            photoLinks = results.filter(r => r && r.success).map(r => r.data.url);
+                            debug.log(`All ${results.length} upload promises settled.`);
+                            photoLinks = results
+                                .filter(r => r && r.success && r.data && r.data.url)
+                                .map(r => r.data.url);
+                            debug.log(`Successfully got ${photoLinks.length} links.`);
                             return { success: true };
                         });
 
-                        // Race against the 10s timeout
-                        await Promise.race([mainPromise, timeoutPromise]);
+                        // Race against the 30s timeout
+                        const result = await Promise.race([mainPromise, timeoutPromise]);
+                        if (result && result.timeout) {
+                            debug.log('Continuing without photos due to timeout');
+                        }
+                    } else {
+                        debug.log('No photos to upload, skipping.');
                     }
                 } catch (err) {
-                    console.error('Photo Upload Error:', err);
+                    debug.error('Global uploadPhotos error:', err);
                 }
             };
 
             uploadPhotos().then(() => {
+                debug.log('Proceeding to EmailJS submission...');
                 const templateParams = {
                     name: formData.get('name'),
                     phone: formData.get('phone'),
@@ -1063,15 +1124,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     photo_links: photoLinks.join('\n') || 'No photos uploaded'
                 };
 
+                debug.log('Template params prepared. Sending EmailJS...');
                 // Using 'default_service' with 'Teneo-Photo-Template-ID'
                 emailjs.send('default_service', 'Teneo-Photo-Template-ID', templateParams, 'kfNQhGRRUUualAMyQ')
-                    .then(() => {
+                    .then((res) => {
+                    debug.log('EmailJS Success!');
                     showToast(isZh ? "预订成功！我们会尽快与您联系。" : "Booking successful! We'll contact you soon.");
                     setTimeout(() => {
                         window.location.href = 'index.html'; // Redirect home
                     }, 2000);
                 }, (error) => {
-                    console.error('EmailJS Error Detail:', error.text || error);
+                    debug.error('EmailJS Error:', error);
                     showToast(isZh ? `发送失败: ${error.text || "请检查 Service ID"}` : `Failed: ${error.text || "Check Service ID"}`);
                     if (submitBtn) {
                         submitBtn.disabled = false;
@@ -1082,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         desktopSubmitBtn.textContent = originalDesktopText;
                     }
                 }).catch((error) => {
-                    console.error('Submission Chain Error:', error);
+                    debug.error('EmailJS catch Error:', error);
                     showToast(isZh ? "提交出错，请重试" : "Submission error, please try again");
                     if (submitBtn) {
                         submitBtn.disabled = false;
@@ -1093,6 +1156,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         desktopSubmitBtn.textContent = originalDesktopText;
                     }
                 });
+            }).catch(err => {
+                debug.error('Final chain error:', err);
             });
         });
     }
