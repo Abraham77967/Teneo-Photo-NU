@@ -212,7 +212,24 @@
                 </div>
 
                 <div class="wizard-nav-buttons">
-                    <button type="submit" class="btn-wizard-next">Save Date</button>
+                    <button type="button" class="btn-wizard-next" onclick="goToStep(6, 'Review Details')">Review Details</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Summary Review -->
+            <div class="wizard-step" id="step-6">
+                <div class="review-summary-card">
+                    <div class="review-section" id="review-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="deposit-notice">
+                    <p><strong>Note:</strong> A $5 deposit is required via Venmo/Zelle after submitting this form to lock in your date.</p>
+                </div>
+
+                <div class="wizard-nav-buttons">
+                    <button type="submit" class="btn-wizard-next">Confirm & Save Date</button>
                 </div>
             </div>
         </form>

@@ -466,6 +466,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetStep.classList.remove(enterClass);
             });
         }
+        
+        // Populate review summary if going to step 6
+        if (stepNum === 6) {
+            populateReviewSummary();
+        }
 
         // Toggle Header
         const step1Header = document.getElementById('step1-header');
@@ -496,6 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         case 2: prevTitle = document.documentElement.lang === 'zh-CN' ? "你的信息" : "Your Details"; break;
                         case 3: prevTitle = document.documentElement.lang === 'zh-CN' ? "摄影风格偏好" : "Style Preference"; break;
                         case 4: prevTitle = document.documentElement.lang === 'zh-CN' ? "首选地点" : "Preferred Locations"; break;
+                        case 5: prevTitle = document.documentElement.lang === 'zh-CN' ? "最后细节" : "Final Details"; break;
                     }
                     goToStep(stepNum - 1, prevTitle);
                 };
@@ -504,10 +510,89 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Desktop Continue Buttons
         const desktopOtherContinue = document.getElementById('desktop-other-continue');
         if (desktopOtherContinue) {
-            const isLastStep = stepNum === 5;
             const isZh = document.documentElement.lang === 'zh-CN';
-            desktopOtherContinue.textContent = isLastStep ? (isZh ? "保存日期" : "Save Date") : (isZh ? "继续 >" : "Continue >");
+            const isLastStep = stepNum === 6;
+            desktopOtherContinue.textContent = isLastStep ? (isZh ? "确认并保存" : "Confirm & Save") : (isZh ? "继续 >" : "Continue >");
         }
+    };
+
+    const populateReviewSummary = () => {
+        const reviewContent = document.getElementById('review-content');
+        if (!reviewContent) return;
+
+        const isZh = document.documentElement.lang === 'zh-CN';
+        
+        // Data gathering
+        const datetime = document.getElementById('datetime-val')?.value || (isZh ? '未选择' : 'Not selected');
+        const name = document.getElementById('name')?.value || '';
+        const phone = document.getElementById('phone')?.value || '';
+        
+        // Style
+        const styleRadios = document.querySelectorAll('input[name="style"]:checked');
+        let styleVal = styleRadios.length > 0 ? styleRadios[0].value : (isZh ? '未选择' : 'Not selected');
+        const customStyle = document.querySelector('textarea[name="custom-style"]')?.value.trim();
+        if (customStyle) styleVal += ` (${customStyle})`;
+
+        // Locations
+        const selectedLocations = [];
+        document.querySelectorAll('input[name="locations[]"]:checked').forEach(cb => {
+            if (cb.classList.contains('college-checkbox')) {
+                const collegeInput = cb.closest('.college-item').querySelector('.college-input');
+                const collegeName = collegeInput ? collegeInput.value.trim() : '';
+                selectedLocations.push(collegeName ? `${isZh ? '学院楼' : 'College'}: ${collegeName}` : (isZh ? '学院楼' : 'College Building'));
+            } else {
+                selectedLocations.push(cb.value);
+            }
+        });
+        const locationsVal = selectedLocations.length > 0 ? selectedLocations.join(', ') : (isZh ? '未选择' : 'Not selected');
+
+        // Guests
+        const guestNames = document.querySelectorAll('input[name="extra-name[]"]');
+        const guestsVal = guestNames.length > 0 ? `${guestNames.length} ${isZh ? '位朋友' : 'Friend(s)'}` : (isZh ? '无' : 'None');
+
+        // Notes
+        const notes = document.querySelector('textarea[name="notes"]')?.value.trim() || (isZh ? '无' : 'None');
+
+        const labels = {
+            datetime: isZh ? '日期与时间' : 'Date & Time',
+            name: isZh ? '姓名' : 'Name',
+            phone: isZh ? '电话' : 'Phone',
+            guests: isZh ? '随行人数' : 'Extra Guests',
+            style: isZh ? '摄影风格' : 'Style Preference',
+            locations: isZh ? '拍摄地点' : 'Locations',
+            notes: isZh ? '备注' : 'Notes'
+        };
+
+        reviewContent.innerHTML = `
+            <div class="review-item">
+                <span class="review-label">${labels.datetime}</span>
+                <span class="review-value">${datetime}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.name}</span>
+                <span class="review-value">${name}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.phone}</span>
+                <span class="review-value">${phone}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.guests}</span>
+                <span class="review-value">${guestsVal}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.style}</span>
+                <span class="review-value">${styleVal}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.locations}</span>
+                <span class="review-value">${locationsVal}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">${labels.notes}</span>
+                <span class="review-value">${notes}</span>
+            </div>
+        `;
     };
 
     // Initialize: Disable all steps except the first one
@@ -537,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentStepNum = currentActive ? parseInt(currentActive.id.split('-')[1]) : 1;
             const isZh = document.documentElement.lang === 'zh-CN';
 
-            if (currentStepNum === 5) {
+            if (currentStepNum === 6) {
                 if (bookingForm) {
                     // Use a standard submit button click to trigger validation
                     const hiddenSubmit = document.createElement('button');
@@ -554,6 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 3: nextTitle = isZh ? "摄影风格偏好" : "Style Preference"; break;
                     case 4: nextTitle = isZh ? "首选地点" : "Preferred Locations"; break;
                     case 5: nextTitle = isZh ? "最后细节" : "Final Details"; break;
+                    case 6: nextTitle = isZh ? "预览详情" : "Review Details"; break;
                 }
                 goToStep(nextStepNum, nextTitle);
             }
@@ -887,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.textContent = isZh ? "发送中..." : "Sending...";
             }
-            if (desktopSubmitBtn && document.querySelector('.wizard-step.active').id === 'step-5') {
+            if (desktopSubmitBtn && document.querySelector('.wizard-step.active').id === 'step-6') {
                 desktopSubmitBtn.disabled = true;
                 desktopSubmitBtn.textContent = isZh ? "发送中..." : "Sending...";
             }
