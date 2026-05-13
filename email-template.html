@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f9fafb;">
+    <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800;">New Booking Request</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;">Teneo Photo Studio</p>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 40px;">
+            <div style="margin-bottom: 30px;">
+                <p style="color: #4b5563; font-size: 16px; margin: 0;">A new message from <strong>{{name}}</strong> has been received. Here are the session details:</p>
+            </div>
+
+            <!-- Customer Card -->
+            <div style="background-color: #f8faff; border-radius: 15px; padding: 25px; margin-bottom: 30px; border: 1px solid #e5e7eb;">
+                <table role="presentation" width="100%">
+                    <tr>
+                        <td style="vertical-align: top; width: 60px;">
+                            <div style="width: 50px; height: 50px; background-color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+                                👤
+                            </div>
+                        </td>
+                        <td style="vertical-align: top; padding-left: 15px;">
+                            <div style="color: #111827; font-size: 18px; font-weight: 700; margin-bottom: 4px;">{{name}}</div>
+                            <div style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">{{datetime}}</div>
+                            <div style="color: #4b5563; font-size: 15px; line-height: 1.5;">
+                                <strong>Phone:</strong> {{phone}}<br>
+                                <strong>Style:</strong> {{style}}<br>
+                                <strong>Custom Style:</strong> {{custom_style}}<br>
+                                <strong>Locations:</strong> {{locations}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Friends Section (if any) -->
+            <div style="margin-bottom: 30px; padding: 0 10px;">
+                <h3 style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Additional Guests</h3>
+                <p style="color: #4b5563; font-size: 15px; margin: 0; line-height: 1.6;">
+                    {{guests}}
+                </p>
+            </div>
+
+            <!-- Photo References Section -->
+            <div style="margin-bottom: 30px; padding: 0 10px;">
+                <h3 style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Photo References</h3>
+                <div style="color: #2563eb; font-size: 14px; line-height: 1.6; word-break: break-all;">
+                    {{photo_links}}
+                </div>
+            </div>
+
+            <!-- Message Section -->
+            <div style="border-top: 1px dashed #d1d5db; padding-top: 25px;">
+                <h3 style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Client Message</h3>
+                <div style="background-color: #fffaf0; border-left: 4px solid #ECA06B; padding: 15px 20px; border-radius: 4px;">
+                    <p style="color: #2d3748; font-size: 16px; margin: 0; font-style: italic; line-height: 1.6;">
+                        "{{notes}}"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f3f4f6; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                This email was sent from your Teneo Photo website booking form.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

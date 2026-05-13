@@ -2,17 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
     
-    window.addEventListener('scroll', () => {
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
         }
-    });
-
-    // Fix initial navbar state
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
     }
 
     // Intersection Observer for scroll animations
@@ -373,7 +374,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Wizard Navigation Logic
     window.goToStep = function(stepNum, stepTitle) {
-        // Validation for step 1
+        const targetStep = document.getElementById(`step-${stepNum}`);
+
+        // Validation for progression
+        if (stepNum > 1) {
+            let currentActive = document.querySelector('.wizard-step.active');
+            if (currentActive) {
+                // Check all required inputs in the current step
+                const inputs = currentActive.querySelectorAll('input[required], textarea[required], select[required]');
+                let allValid = true;
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.reportValidity();
+                        allValid = false;
+                    }
+                });
+                
+                if (!allValid) return;
+            }
+        }
+
+        // Special validation for step 1 (Date/Time)
         if (stepNum === 2) {
             const dateVal = document.getElementById('datetime-val');
             if (!dateVal || !dateVal.value) {
@@ -404,14 +425,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Clean up any lingering animation classes on all steps
         document.querySelectorAll('.wizard-step').forEach(step => {
-            if (step !== currentActive) {
+            if (step !== currentActive && step !== targetStep) {
                 step.classList.remove('active', 'exit-left', 'exit-right', 'enter-left', 'enter-right');
                 step.style.transform = '';
                 step.style.opacity = '';
+                
+                // Disable hidden inputs to prevent 'not focusable' validation errors
+                step.querySelectorAll('input, textarea, select').forEach(input => {
+                    input.disabled = true;
+                });
             }
         });
-
-        const targetStep = document.getElementById(`step-${stepNum}`);
 
         // Animate the outgoing step
         if (currentActive && currentActive !== targetStep) {
@@ -431,6 +455,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetStep) {
             targetStep.classList.add('active', enterClass);
             targetStep.scrollTop = 0; // Reset scroll position
+            
+            // Enable inputs in the active step
+            targetStep.querySelectorAll('input, textarea, select').forEach(input => {
+                input.disabled = false;
+            });
 
             targetStep.addEventListener('animationend', function handler() {
                 targetStep.removeEventListener('animationend', handler);
@@ -480,6 +509,15 @@ document.addEventListener('DOMContentLoaded', () => {
             desktopOtherContinue.textContent = isLastStep ? (isZh ? "保存日期" : "Save Date") : (isZh ? "继续 >" : "Continue >");
         }
     };
+
+    // Initialize: Disable all steps except the first one
+    document.querySelectorAll('.wizard-step').forEach(step => {
+        if (step.id !== 'step-1') {
+            step.querySelectorAll('input, textarea, select').forEach(input => {
+                input.disabled = true;
+            });
+        }
+    });
 
     // Desktop Header Continue Buttons Logic
     const desktopStep1Continue = document.getElementById('desktop-step1-continue');
@@ -772,53 +810,166 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(e.target.value.trim() !== '') {
                     checkbox.checked = true;
                     checkbox.value = "College Building: " + e.target.value.trim();
-                } else {
-                    checkbox.checked = false;
-                    checkbox.value = "College Building";
                 }
                 updateDropdownHeader();
             });
         });
+    }
 
-        // Add Custom Location Logic
-        const addCustomBtn = document.getElementById('add-custom-location-btn');
-        const customInputField = document.getElementById('custom-location-input-field');
+    // Global Event Delegation for Custom Location Adding
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'add-custom-location-btn') {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const customInputField = document.getElementById('custom-location-input-field');
+            const val = customInputField ? customInputField.value.trim() : '';
+            
+            if (val) {
+                const newLabel = document.createElement('label');
+                newLabel.className = 'dropdown-item';
+                newLabel.innerHTML = `
+                    <div class="img-wrapper"><img src="assets/grad_cap.png" alt="${val}"></div>
+                    <span>${val}</span>
+                    <input type="checkbox" name="locations[]" value="${val}" class="dropdown-checkbox" checked>
+                `;
+                
+                const adder = document.querySelector('.custom-location-adder');
+                if (adder && adder.parentNode) {
+                    adder.parentNode.insertBefore(newLabel, adder);
+                    
+                    // Trigger header update
+                    const header = document.getElementById('location-dropdown-header');
+                    const allCheckboxes = document.querySelectorAll('.dropdown-checkbox');
+                    const selected = Array.from(allCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+                    
+                    if (header) {
+                        if (selected.length === 0) {
+                            header.textContent = header.dataset.default || 'Select Locations...';
+                        } else if (selected.length === 1) {
+                            header.textContent = selected[0];
+                        } else {
+                            header.textContent = `${selected.length} Locations Selected`;
+                        }
+                    }
 
-        if (addCustomBtn && customInputField) {
-            addCustomBtn.addEventListener('click', (e) => {
-                e.preventDefault(); // prevent form submit
-                const val = customInputField.value.trim();
-                if (val) {
-                    const newLabel = document.createElement('label');
-                    newLabel.className = 'dropdown-item';
-                    
-                    const newImg = document.createElement('img');
-                    newImg.src = 'assets/grad_cap.png'; // use grad cap for custom
-                    newImg.alt = val;
-                    
-                    const newSpan = document.createElement('span');
-                    newSpan.textContent = val;
-                    
-                    const newCheckbox = document.createElement('input');
-                    newCheckbox.type = 'checkbox';
-                    newCheckbox.name = 'locations[]';
-                    newCheckbox.value = val;
-                    newCheckbox.className = 'dropdown-checkbox';
-                    newCheckbox.checked = true;
-                    
-                    newCheckbox.addEventListener('change', updateDropdownHeader);
-
-                    newLabel.appendChild(newImg);
-                    newLabel.appendChild(newSpan);
-                    newLabel.appendChild(newCheckbox);
-
-                    const adder = document.querySelector('.custom-location-adder');
-                    dropdownList.insertBefore(newLabel, adder);
-                    
                     customInputField.value = '';
-                    updateDropdownHeader();
+                }
+            }
+        }
+    });
+
+    // EmailJS Form Submission
+    const bookingFormEl = document.getElementById('booking-form');
+    if (bookingFormEl) {
+        bookingFormEl.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = bookingFormEl.querySelector('button[type="submit"]');
+            const desktopSubmitBtn = document.getElementById('desktop-other-continue');
+            const originalText = submitBtn ? submitBtn.textContent : "Save Date";
+            const originalDesktopText = desktopSubmitBtn ? desktopSubmitBtn.textContent : "Save Date";
+            const isZh = document.documentElement.lang === 'zh-CN';
+
+            // Visual feedback
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = isZh ? "发送中..." : "Sending...";
+            }
+            if (desktopSubmitBtn && document.querySelector('.wizard-step.active').id === 'step-5') {
+                desktopSubmitBtn.disabled = true;
+                desktopSubmitBtn.textContent = isZh ? "发送中..." : "Sending...";
+            }
+
+            // GATHER DATA MANUALLY for better formatting in EmailJS
+            // IMPORTANT: Re-enable all inputs temporarily so FormData can see them
+            this.querySelectorAll('input, textarea, select').forEach(input => {
+                input.disabled = false;
+            });
+
+            const formData = new FormData(this);
+            
+            // Format Locations (Enhanced for College Building)
+            const selectedLocations = [];
+            document.querySelectorAll('input[name="locations[]"]:checked').forEach(cb => {
+                if (cb.classList.contains('college-checkbox')) {
+                    const collegeInput = cb.closest('.college-item').querySelector('.college-input');
+                    const collegeName = collegeInput ? collegeInput.value.trim() : '';
+                    selectedLocations.push(collegeName ? `College Building: ${collegeName}` : 'College Building');
+                } else {
+                    selectedLocations.push(cb.value);
                 }
             });
-        }
+            
+            // Format Guests with Phones
+            const guestEntries = [];
+            const guestNames = document.querySelectorAll('input[name="extra-name[]"]');
+            const guestPhones = document.querySelectorAll('input[name="extra-phone[]"]');
+            
+            guestNames.forEach((input, index) => {
+                const name = input.value.trim();
+                if (name) {
+                    const phone = guestPhones[index] ? guestPhones[index].value.trim() : '';
+                    guestEntries.push(phone ? `${name} (${phone})` : name);
+                }
+            });
+
+            // UPLOAD PHOTOS to ImgBB if any
+            const photoInput = document.getElementById('photo-reference-input');
+            let photoLinks = [];
+
+            const uploadPhotos = async () => {
+                if (photoInput && photoInput.files.length > 0) {
+                    if (submitBtn) submitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
+                    if (desktopSubmitBtn) desktopSubmitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
+
+                    const uploadPromises = Array.from(photoInput.files).map(file => {
+                        const formDataImg = new FormData();
+                        formDataImg.append('image', file);
+                        return fetch(`https://api.imgbb.com/1/upload?key=99ac161af67397a6f5968dd88ad16543`, {
+                            method: 'POST',
+                            body: formDataImg
+                        }).then(res => res.json());
+                    });
+
+                    const results = await Promise.all(uploadPromises);
+                    photoLinks = results.filter(r => r.success).map(r => r.data.url);
+                }
+            };
+
+            uploadPhotos().then(() => {
+                const templateParams = {
+                    name: formData.get('name'),
+                    phone: formData.get('phone'),
+                    datetime: formData.get('datetime'),
+                    style: formData.get('style'),
+                    custom_style: formData.get('custom-style'),
+                    notes: formData.get('notes'),
+                    locations: selectedLocations.join(', '),
+                    guests: guestEntries.join(', ') || 'None',
+                    photo_links: photoLinks.join('\n') || 'No photos uploaded'
+                };
+
+                // Using 'default_service' with 'Teneo-Photo-Template-ID'
+                emailjs.send('default_service', 'Teneo-Photo-Template-ID', templateParams, 'kfNQhGRRUUualAMyQ')
+                    .then(() => {
+                    showToast(isZh ? "预订成功！我们会尽快与您联系。" : "Booking successful! We'll contact you soon.");
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Redirect home
+                    }, 2000);
+                }, (error) => {
+                    console.error('EmailJS Error Detail:', error.text || error);
+                    showToast(isZh ? `发送失败: ${error.text || "请检查 Service ID"}` : `Failed: ${error.text || "Check Service ID"}`);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                    if (desktopSubmitBtn) {
+                        desktopSubmitBtn.disabled = false;
+                        desktopSubmitBtn.textContent = originalDesktopText;
+                    }
+                });
+            });
+        });
     }
 });
