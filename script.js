@@ -1069,6 +1069,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Race against the timeout
                         await Promise.race([mainPromise, timeoutPromise]);
                     }
+                    
+                    // Update button text to show we've moved to the email phase
+                    if (submitBtn) submitBtn.textContent = isZh ? "正在发送预约信息..." : "Sending details...";
+                    if (desktopSubmitBtn) desktopSubmitBtn.textContent = isZh ? "正在发送预约信息..." : "Sending details...";
+                    
                 } catch (err) {
                     console.error('Photo Upload Global Error:', err);
                     showToast(isZh ? "上传图片时发生错误" : "Error uploading photos: " + err.message);
@@ -1085,8 +1090,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     notes: formData.get('notes'),
                     locations: selectedLocations.join(', '),
                     guests: guestEntries.join(', ') || 'None',
-                    photo_links: photoLinks.join('\n') || 'No photos uploaded'
+                    photo_links: photoLinks.length > 0 ? photoLinks.join('\n') : 'No photos successfully uploaded'
                 };
+
+                console.log('Sending email with params:', templateParams);
+                showToast(isZh ? "正在通过 EmailJS 发送..." : "Sending via EmailJS...");
 
                 // Using 'default_service' with 'Teneo-Photo-Template-ID'
                 emailjs.send('default_service', 'Teneo-Photo-Template-ID', templateParams, 'kfNQhGRRUUualAMyQ')
