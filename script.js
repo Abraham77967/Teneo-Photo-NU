@@ -919,21 +919,25 @@ document.addEventListener('DOMContentLoaded', () => {
             let photoLinks = [];
 
             const uploadPhotos = async () => {
-                if (photoInput && photoInput.files.length > 0) {
-                    if (submitBtn) submitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
-                    if (desktopSubmitBtn) desktopSubmitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
+                try {
+                    if (photoInput && photoInput.files.length > 0) {
+                        if (submitBtn) submitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
+                        if (desktopSubmitBtn) desktopSubmitBtn.textContent = isZh ? "上传图片中..." : "Uploading photos...";
 
-                    const uploadPromises = Array.from(photoInput.files).map(file => {
-                        const formDataImg = new FormData();
-                        formDataImg.append('image', file);
-                        return fetch(`https://api.imgbb.com/1/upload?key=99ac161af67397a6f5968dd88ad16543`, {
-                            method: 'POST',
-                            body: formDataImg
-                        }).then(res => res.json());
-                    });
+                        const uploadPromises = Array.from(photoInput.files).map(file => {
+                            const formDataImg = new FormData();
+                            formDataImg.append('image', file);
+                            return fetch(`https://api.imgbb.com/1/upload?key=99ac161af67397a6f5968dd88ad16543`, {
+                                method: 'POST',
+                                body: formDataImg
+                            }).then(res => res.json()).catch(err => ({ success: false, error: err }));
+                        });
 
-                    const results = await Promise.all(uploadPromises);
-                    photoLinks = results.filter(r => r.success).map(r => r.data.url);
+                        const results = await Promise.all(uploadPromises);
+                        photoLinks = results.filter(r => r.success).map(r => r.data.url);
+                    }
+                } catch (err) {
+                    console.error('Photo Upload Error:', err);
                 }
             };
 
@@ -960,6 +964,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, (error) => {
                     console.error('EmailJS Error Detail:', error.text || error);
                     showToast(isZh ? `发送失败: ${error.text || "请检查 Service ID"}` : `Failed: ${error.text || "Check Service ID"}`);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                    if (desktopSubmitBtn) {
+                        desktopSubmitBtn.disabled = false;
+                        desktopSubmitBtn.textContent = originalDesktopText;
+                    }
+                }).catch((error) => {
+                    console.error('Submission Chain Error:', error);
+                    showToast(isZh ? "提交出错，请重试" : "Submission error, please try again");
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.textContent = originalText;
